@@ -10,25 +10,22 @@
   (for [i (range (dec x) (+ x 2))
         j (range (dec y) (+ y 2))
         :when (or (not= i x)
-                  (not= j y))
-        ]
-    [i j]
-    ))
+                  (not= j y))]
+    [i j]))
 #_(assert (= (neighbour-coordinates [1 1])
            [[0 1] [0 2] [0 3] [1 1] [1 3] [2 1] [2 2] [2 3]]))
 
 (defn how-many-neighbours [board [x y :as pair]]
   (let [coordinates (neighbour-coordinates pair)
         neighbours (map (partial get-in board) coordinates)]
-    (println (str "Pair: " pair))
     (->> neighbours
-        (filter (fn [c] (not (nil? c)))) ;TODO filter identity ;This handles neighb. coordinates out matrix (corner cases)
-        #_(reduce (fn [counts neighbour]
-                  (update counts neighbours inc))
-                  {})
-        (group-by identity)
-        (map (fn [[k v]] {k (count v)}))
-        (apply merge {:. 0 :| 0 :# 0}))))
+         (filter (fn [c] (not (nil? c)))) ;TODO filter identity ;This handles neighb. coordinates out matrix (corner cases)
+         #_(reduce (fn [counts neighbour]
+                     (update counts neighbours inc))
+                   {})
+         (group-by identity)
+         (map (fn [[k v]] {k (count v)}))
+         (apply merge {:. 0 :| 0 :# 0}))))
 (assert (= (how-many-neighbours [[:. :# :.]
                                  [:. :. :.]
                                  [:. :# :|]]
@@ -39,9 +36,9 @@
 (defn parse-lines [text] ;=> matrix of keywords
   (let [lines (clojure.string/split text #"\n")
         mx-characters (map seq lines)]
-    (mapv #(mapv (comp keyword str) %) mx-characters)
-    ))
-;(println (parse-lines ".|\n#."))
+    (mapv #(mapv (comp keyword str) %) mx-characters)))
+
+                                        ;(println (parse-lines ".|\n#."))
 (assert (= (parse-lines ".|\n#.")
            [[:. :|][:# :.]]))
 
@@ -77,16 +74,12 @@
   (get-in game [row col]))
 
 (defn next-game-state
-  [neighbour-provider game size]
-  (println "next-game-state")
-  (pprint/pprint game)
+  [neighbour-provider size game]
   (->> (for [row (range size)
              col (range size)
              :let [neighbours (neighbour-provider game [row col])
-                   cell (cell game row col)]
-             :let [_ (println "x y cell: " row col cell)]
-             ]
-         (do (println (str "Cell: " cell))
+                   cell (cell game row col)]]
+         (do (assert cell "cannot retrieve cell value, there might be a bug somewhere")
              (evolve cell neighbours)))
        (partition size)
        (map vec)
