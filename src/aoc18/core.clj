@@ -27,3 +27,19 @@
             (>= (:| neighbours) 1))
          :#
          :.)))
+
+(defn resource-value [board]
+  (let [flatten-board (flatten board)
+        n-trees (->> flatten-board
+                     (filter (fn [x] (= x :|)))
+                     (count))
+        n-lumberyards (->> flatten-board
+                           (filter (fn [x] (= x :#)))
+                           (count))]
+    (* n-trees n-lumberyards)))
+
+
+
+
+(comment
+  (= 2 (resource-value [[:#,:.],[:|,:|]])))
