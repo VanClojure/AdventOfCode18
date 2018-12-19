@@ -85,24 +85,23 @@
        (map vec)
        vec))
 
-(defn iterate
-  [game size minutes]
-  (println (str "Size: " size))
-  (loop [g game
-         gs size ;TODO not needed - just use size
-         m 0]
-    (if (< m minutes)
-      (recur (next-game-state how-many-neighbours g gs) gs (inc m))
-      g)))
-
 (defn -main
   [& args]
   (let [game (-> args first slurp parse-lines)
         size (count (first game))
-        final-game (iterate game size 10)]
+        next-game-state (partial next-game-state how-many-neighbours size)
+        games (iterate next-game-state game)
+        games-10 (take 10 games)
+        final-game (nth games-10 9)]
     (println "Initial game:")
     (pprint/pprint game)
-    (println "After 10 minuts:")
+
+    (doseq [[i g] (map-indexed vector games-10)]
+      (println "Iteration" (str "#" (inc i)))
+      (pprint/pprint g))
+
+    (println "After 10 iterations:")
     (pprint/pprint final-game)
+
     (println "Resource value:")
     (println (resource-value final-game))))
