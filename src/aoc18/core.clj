@@ -35,3 +35,18 @@
   [game row col]
   (get-in game [row col]))
 
+(defn who-are-my-neighbours
+  [game row col]
+  {:. 4
+   :| 0
+   :# 1})
+
+(defn next-state
+  [neighbour-provider game size]
+  (->> (for [row (range size)
+             col (range size)
+             :let [neighbours (neighbour-provider game row col)
+                   cell (cell game row col)]
+             :while (some? cell)]
+         (evolve cell neighbours))
+       (partition size)))
