@@ -16,3 +16,16 @@
 ;(println (parse-lines ".|\n#."))
 (assert (= (parse-lines ".|\n#.")
            [[:. :|][:# :.]]))
+
+
+(defn evolve
+  "Takes the current type and returns the next type"
+  [current-type neighbours]
+  (case current-type
+    :. (if (>= (:| neighbours) 3) :| :.)
+    :| (if (>= (:# neighbours) 3) :# :|)
+    :# (if (and
+            (>= (:# neighbours) 1)
+            (>= (:| neighbours) 1))
+         :#
+         :.)))
