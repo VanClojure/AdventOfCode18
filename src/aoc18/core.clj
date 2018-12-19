@@ -6,7 +6,7 @@
                   [:. :. :. :# :|]
                   [:. :# :| :| :.]])
 
-(defn neighbour-coordinates [[x y]]
+(defn neighbour-coordinates [[x y]] ;=> seq. of coordinate pairs (vectors of two). Including ones out of matrix (filter them out on the caller's side).
   (for [i (range (dec x) (+ x 2))
         j (range (dec y) (+ y 2))
         :when (or (not= i x)
@@ -22,7 +22,7 @@
         neighbours (map (partial get-in board) coordinates)]
     (println (str "Pair: " pair))
     (->> neighbours
-        (filter (fn [c] (not (nil? c))))
+        (filter (fn [c] (not (nil? c)))) ;TODO filter identity ;This handles neighb. coordinates out matrix (corner cases)
         #_(reduce (fn [counts neighbour]
                   (update counts neighbours inc))
                   {})
@@ -78,11 +78,15 @@
 
 (defn next-game-state
   [neighbour-provider game size]
+  (println "next-game-state")
+  (pprint/pprint game)
   (->> (for [row (range size)
              col (range size)
              :let [neighbours (neighbour-provider game [row col])
                    cell (cell game row col)]
-             :while (some? cell)]
+             :let [_ (println "x y cell: " row col cell)]
+             :while (some? cell)
+             ]
          (do (println (str "Cell: " cell))
              (evolve cell neighbours)))
        (partition size)))
@@ -91,7 +95,7 @@
   [game size minutes]
   (println (str "Size: " size))
   (loop [g game
-         gs size
+         gs size ;TODO not needed - just use size
          m 0]
     (if (< m minutes)
       (recur (next-game-state how-many-neighbours g gs) gs (inc m))
