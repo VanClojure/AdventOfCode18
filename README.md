@@ -1,6 +1,8 @@
 # Advent of Code 2018 #18 - in Clojure
 Clojure implementation of https://adventofcode.com/2018/day/18. The assignment is a variation of game of life.
 
+See also [Retrospective.md](./Retrospective.md).
+
 ## Usage
 
 `lein run aoc18-initial-10x10.txt`
