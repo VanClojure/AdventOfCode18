@@ -1,5 +1,6 @@
 (ns aoc18.core
-  (:require [clojure.string :as str]))
+  (:require [clojure.string :as str]
+            [clojure.pprint :as pprint]))
 
 (defn char->keyword
   [c]
@@ -29,12 +30,13 @@
          :#
          :.)))
 
-(defn resource-value [board]
-  (let [flatten-board (flatten board)
-        n-trees (->> flatten-board
+(defn resource-value
+  [game]
+  (let [flatten-game (flatten game)
+        n-trees (->> flatten-game
                      (filter (fn [x] (= x :|)))
                      (count))
-        n-lumberyards (->> flatten-board
+        n-lumberyards (->> flatten-game
                            (filter (fn [x] (= x :#)))
                            (count))]
     (* n-trees n-lumberyards)))
@@ -77,5 +79,11 @@
 (defn -main
   [& args]
   (let [game (-> args first slurp parse-lines)
-        size (count (first game))]
-    (iterate game size 10)))
+        size (count (first game))
+        final-game (iterate game size 10)]
+    (println "Initial game:")
+    (pprint/pprint game)
+    (println "After 10 minuts:")
+    (pprint/pprint final-game)
+    (println "Resource value:")
+    (println (resource-value final-game))))
