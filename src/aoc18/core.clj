@@ -85,11 +85,12 @@
              :let [neighbours (neighbour-provider game [row col])
                    cell (cell game row col)]
              :let [_ (println "x y cell: " row col cell)]
-             :while (some? cell)
              ]
          (do (println (str "Cell: " cell))
              (evolve cell neighbours)))
-       (partition size)))
+       (partition size)
+       (map vec)
+       vec))
 
 (defn iterate
   [game size minutes]
