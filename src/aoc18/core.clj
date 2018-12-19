@@ -34,15 +34,7 @@
                                  [:. :# :|]]
                                 [1 1])
            {:. 5, :| 1, :# 2}))
-
 #_{:. 1 :| 2 :# 0}
-
-(defn char->keyword
-  [c]
-  (cond
-    (= 0 (str/index-of c \.)) :open-ground
-    (= 0 (str/index-of c \|)) :trees
-    (= 0 (str/index-of c \#)) :lumberard))
 
 (defn parse-lines [text] ;=> matrix of keywords
   (let [lines (clojure.string/split text #"\n")
