@@ -1,7 +1,8 @@
 (ns aoc18.core-test
-  (:require [clojure.test :refer :all]
-            [app.core :refer :all]))
+  (:require [clojure.test :as test]
+            [aoc18.core :as core]))
 
-(deftest a-test
-  (testing "FIXME, I fail."
-    (is (= 0 1))))
+(deftest predicate-tests
+  (is (= :open-ground (core/char->keyword ".")))
+  (is (= :trees (core/char->keyword "|")))
+  (is (= :lumberard (core/char->keyword "#"))))

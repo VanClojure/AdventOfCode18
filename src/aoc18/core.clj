@@ -1,6 +1,9 @@
-(ns aoc18.core)
+(ns aoc18.core
+  (:require [clojure.string :as str]))
 
-(defn foo
-  "I don't do a whole lot."
-  [x]
-  (println x "Hello, World!"))
+(defn char->keyword
+  [c]
+  (cond
+    (= 0 (str/index-of c \.)) :open-ground
+    (= 0 (str/index-of c \|)) :trees
+    (= 0 (str/index-of c \#)) :lumberard))
