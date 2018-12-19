@@ -1,5 +1,5 @@
 # Hitting the wall
-The error was that function `next-game-state` expected a matrix, but it returned a `seq` of `seq` -  result of `partition` (which was fed by `for`, which also creates a `seq`). Hence the problem only showed up during the second iteration.
+The error was that function `next-game-state` expected a matrix, but it returned a `seq` of `seq`. That was from `partition` (which was fed by `for`, which also creates a `seq`). Hence the problem only showed up during the second iteration.
 
 Hiding the problem was our use of `get-in`. While being helpful, `get-in` returns `nil` for non-existing indices, or for structures other than a `map` or a `vector` (in our case it was a `seq` of `seq`), or even for `nil`!
 
@@ -41,10 +41,10 @@ That would have helped with assumptions and spreading the knowledge.
 We agreed that the cells ("types") would be keywords, but the providers only assumed them to be `:|, :#` and `:.`
 
 ## Spreading the knowledge, yet staying in the flow
-After our initial delegation (main functions), we added some helper functions: `char->keyword` and `cell`. However, the others didn't know, hence couldn't reuse them. One way to keep up to date could be: more frequent GIT push and continuously piping `grep defn` into some dashboard. That would need function signatures to take one line each (is that common?), or a more advanced filter (for functions with multiple arities).
+After our initial delegation (main functions), we added some helper functions: `char->keyword` and `cell`. However, the others didn't know, hence couldn't reuse them. One way to keep up to date could be: more frequent GIT push and continuously piping `grep defn` into some dashboard. That would need function signatures to take one line each (is that common?), or a more advanced filter (for functions with multiple arities). Alternatively, have a shared live document (for example in Google Docs), where you copy-and-paste the functions signatures.
 
 ## Coding style guide
-Is it worthwhile? Any existing or custom?
+Is it worthwhile? Any existing or custom ones?
 
 ## Design
 I love how Andrea made function `next-game-state` flexible to integrate by having a function as a parameter `neighbour-provider`. It makes it easy to test. That made it _plug-and-play_ instead of _plug-and-pray_.
