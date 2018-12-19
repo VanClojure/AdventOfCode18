@@ -26,7 +26,7 @@ But after iteration, our overall structure of states (in `loop`'s parameter 'g')
 
 Locating it took a while, fix was easy: https://github.com/VanClojure/AdventOfCode18/commit/435b78f.
 
-Side note: It wouldn't be trivial to prevent it by more testing either. Why? Because the most natural way is to test qauality by =, but vectors and `seq` with equal items are considered equal. Hence we would need to check `(type ...)` or (vector? ...)`.
+Side note: It wouldn't be trivial to prevent it by more testing either. Why? Because the most natural way is to test equality by `=`, but `=` considers vectors and `seq` (with equal items) equal. Hence we would need an extra check of `(type ...)` or (vector? ...)`.
 
 Do you know a gut feeling telling you something is wrong? A hint to the problem existed even during the first iteration: function `next-game-state` required `:while (some? cell)`. That didn't make sense, as all cells were initially in a non-`nil` state. Hence, if the execution forces you to do something that seemed strange, dig deeper.
 
