@@ -55,7 +55,7 @@
    :| 0
    :# 1})
 
-(defn next-state
+(defn next-game-state
   [neighbour-provider game size]
   (->> (for [row (range size)
              col (range size)
@@ -64,3 +64,18 @@
              :while (some? cell)]
          (evolve cell neighbours))
        (partition size)))
+
+(defn iterate
+  [game size minutes]
+  (loop [g game
+         gs size
+         m 0]
+    (if (< m minutes)
+      (recur (next-game-state who-are-my-neighbours g gs) gs (inc m))
+      g)))
+
+(defn -main
+  [& args]
+  (let [game (-> args first slurp parse-lines)
+        size (count (first game))]
+    (iterate game size 10)))
