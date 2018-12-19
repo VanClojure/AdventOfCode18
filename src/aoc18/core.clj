@@ -17,7 +17,6 @@
 (assert (= (parse-lines ".|\n#.")
            [[:. :|][:# :.]]))
 
-
 (defn evolve
   "Takes the current type and returns the next type"
   [current-type neighbours]
@@ -29,3 +28,10 @@
             (>= (:| neighbours) 1))
          :#
          :.)))
+
+(declare who-are-my-neighbours)
+
+(defn cell
+  [game row col]
+  (get-in game [row col]))
+
