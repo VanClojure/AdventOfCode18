@@ -11,16 +11,22 @@ Hiding the problem was our use of `get-in`. While being helpful, `get-in` return
 We meant for our overall structure of states to be a matrix. Then the following would work:
 
 ```
-(get-in [[:| :#][:| :.]] [0 1]) ;=> :#
+(get-in [[:| :#]
+         [:| :.]]
+        [0 1]) ;=> :#
 ```
 
 But after iteration, our overall structure of states (in `loop`'s parameter 'g') was not a matrix anymore. It became `seq` of `seq` instead, hence `get-in` bit us silently:
 
 ```
-(get-in '((:| :#)(:| :.)) [0 1]) ;=> nil!
+(get-in '((:| :#)
+          (:| :.))
+         [0 1]) ;=> nil!
 ```
 
 Locating it took a while, fix was easy: https://github.com/VanClojure/AdventOfCode18/commit/435b78f.
+
+Side note: It wouldn't be trivial to prevent it by more testing either. Why? Because the most natural way is to test qauality by =, but vectors and `seq` with equal items are considered equal. Hence we would need to check `(type ...)` or (vector? ...)`.
 
 Do you know a gut feeling telling you something is wrong? A hint to the problem existed even during the first iteration: function `next-game-state` required `:while (some? cell)`. That didn't make sense, as all cells were initially in a non-`nil` state. Hence, if the execution forces you to do something that seemed strange, dig deeper.
 
