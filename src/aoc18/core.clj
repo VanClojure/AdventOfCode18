@@ -85,23 +85,26 @@
        (map vec)
        vec))
 
+(defn game->str
+  [game]
+  (str/join \newline (mapv #(str/join (mapv name %)) game)))
+
 (defn -main
   [& args]
-  (let [game (-> args first slurp parse-lines)
-        size (count (first game))
+  (let [input-game (-> args first slurp parse-lines)
+        size (count (first input-game))
         next-game-state (partial next-game-state how-many-neighbours size)
-        games (iterate next-game-state game)
+        games (iterate next-game-state input-game)
         games-10 (take 10 games)
         final-game (nth games-10 9)]
-    (println "Initial game:")
-    (pprint/pprint game)
+    (println "Initial state:")
+    (println (game->str input-game))
+    (println)
 
     (doseq [[i g] (map-indexed vector games-10)]
-      (println "Iteration" (str "#" (inc i)))
-      (pprint/pprint g))
-
-    (println "After 10 iterations:")
-    (pprint/pprint final-game)
+      (println "After" (inc i) (str "minute" (when (> i 1) "s") ":"))
+      (println (game->str g))
+      (println))
 
     (println "Resource value:")
     (println (resource-value final-game))))
