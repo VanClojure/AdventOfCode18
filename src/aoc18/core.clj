@@ -8,13 +8,14 @@
     (= 0 (str/index-of c \|)) :trees
     (= 0 (str/index-of c \#)) :lumberard))
 
-(defn parse-lines [text]
-  (let [lines (clojure.string/split text #"\n")]
-    (mapv #(seq %) lines)
+(defn parse-lines [text] ;=> matrix of keywords
+  (let [lines (clojure.string/split text #"\n")
+        mx-characters (map seq lines)]
+    (mapv #(mapv (comp keyword str) %) mx-characters)
     ))
+;(println (parse-lines ".|\n#."))
 (assert (= (parse-lines ".|\n#.")
-           [[\.\|][\#\.]]))
-
+           [[:. :|][:# :.]]))
 
 (defn evolve
   "Takes the current type and returns the next type"
@@ -39,7 +40,27 @@
     (* n-trees n-lumberyards)))
 
 
-
-
 (comment
   (= 2 (resource-value [[:#,:.],[:|,:|]])))
+
+(declare who-are-my-neighbours)
+
+(defn cell
+  [game row col]
+  (get-in game [row col]))
+
+(defn who-are-my-neighbours
+  [game row col]
+  {:. 4
+   :| 0
+   :# 1})
+
+(defn next-state
+  [neighbour-provider game size]
+  (->> (for [row (range size)
+             col (range size)
+             :let [neighbours (neighbour-provider game row col)
+                   cell (cell game row col)]
+             :while (some? cell)]
+         (evolve cell neighbours))
+       (partition size)))
