@@ -27,4 +27,4 @@
         my-neighbours-fn (constantly {:. 4
                                       :| 0
                                       :# 1})]
-    (core/next-state my-neighbours-fn game 10)))
+    (core/next-game-state my-neighbours-fn game 10)))
