@@ -20,6 +20,7 @@
 (defn how-many-neighbours [board [x y :as pair]]
   (let [coordinates (neighbour-coordinates pair)
         neighbours (map (partial get-in board) coordinates)]
+    (println (str "Pair: " pair))
     (->> neighbours
         (filter (fn [c] (not (nil? c))))
         #_(reduce (fn [counts neighbour]
@@ -79,35 +80,29 @@
 (comment
   (= 2 (resource-value [[:#,:.],[:|,:|]])))
 
-(declare who-are-my-neighbours)
-
 (defn cell
   [game row col]
   (get-in game [row col]))
-
-(defn who-are-my-neighbours
-  [game row col]
-  {:. 4
-   :| 0
-   :# 1})
 
 (defn next-game-state
   [neighbour-provider game size]
   (->> (for [row (range size)
              col (range size)
-             :let [neighbours (neighbour-provider game row col)
+             :let [neighbours (neighbour-provider game [row col])
                    cell (cell game row col)]
              :while (some? cell)]
-         (evolve cell neighbours))
+         (do (println (str "Cell: " cell))
+             (evolve cell neighbours)))
        (partition size)))
 
 (defn iterate
   [game size minutes]
+  (println (str "Size: " size))
   (loop [g game
          gs size
          m 0]
     (if (< m minutes)
-      (recur (next-game-state who-are-my-neighbours g gs) gs (inc m))
+      (recur (next-game-state how-many-neighbours g gs) gs (inc m))
       g)))
 
 (defn -main
