@@ -2,36 +2,22 @@
   (:require [clojure.string :as str]
             [clojure.pprint :as pprint]))
 
-(def test-board1 [[:. :# :. :# :|]
-                  [:. :. :. :# :|]
-                  [:. :# :| :| :.]])
-
-(defn neighbour-coordinates [[x y]] ;=> seq. of coordinate pairs (vectors of two). Including ones out of matrix (filter them out on the caller's side).
-  (for [i (range (dec x) (+ x 2))
-        j (range (dec y) (+ y 2))
+(defn neighbour-coordinates [[x y] size] ;=> seq. of coordinate pairs (vectors of two).
+  "Provides the sequence of coordinates that are adjacent to the one given as the first argument. Uses size as an upper bound for the values in each axis."
+  (for [i (range (max 0 (dec x)) (min size (+ x 2)))
+        j (range (max 0 (dec y)) (min size (+ y 2)))
         :when (or (not= i x)
                   (not= j y))]
     [i j]))
-#_(assert (= (neighbour-coordinates [1 1])
-           [[0 1] [0 2] [0 3] [1 1] [1 3] [2 1] [2 2] [2 3]]))
 
-(defn how-many-neighbours [board [x y :as pair]]
-  (let [coordinates (neighbour-coordinates pair)
+(defn how-many-neighbours [board [x y :as pair] size]
+  "Provides the count of each kind of cell--lumberyard, forest, and open ground--in the board of the given size, adjacent to the given coordinate."
+  (let [coordinates (neighbour-coordinates pair size)
         neighbours (map (partial get-in board) coordinates)]
     (->> neighbours
-         (filter (fn [c] (not (nil? c)))) ;TODO filter identity ;This handles neighb. coordinates out matrix (corner cases)
-         #_(reduce (fn [counts neighbour]
-                     (update counts neighbours inc))
-                   {})
          (group-by identity)
          (map (fn [[k v]] {k (count v)}))
          (apply merge {:. 0 :| 0 :# 0}))))
-(assert (= (how-many-neighbours [[:. :# :.]
-                                 [:. :. :.]
-                                 [:. :# :|]]
-                                [1 1])
-           {:. 5, :| 1, :# 2}))
-#_{:. 1 :| 2 :# 0}
 
 (defn parse-lines [text] ;=> matrix of keywords
   (let [lines (clojure.string/split text #"\n")
@@ -77,7 +63,7 @@
   [neighbour-provider size game]
   (->> (for [row (range size)
              col (range size)
-             :let [neighbours (neighbour-provider game [row col])
+             :let [neighbours (neighbour-provider game [row col] size)
                    cell (cell game row col)]]
          (do (assert cell "cannot retrieve cell value, there might be a bug somewhere")
              (evolve cell neighbours)))
