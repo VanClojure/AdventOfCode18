@@ -48,3 +48,17 @@
                                       :| 0
                                       :# 1})]
     (core/next-game-state my-neighbours-fn game 10)))
+
+(deftest resource-value-tests
+  (testing "the resource value of a board is the number of squares of lumberyards multiplied by the number of squares of forest."
+    (is (= (core/resource-value [[ :. :| :| :# :# :. :. :. :. :.]
+                                 [ :| :| :# :# :# :. :. :. :. :.]
+                                 [ :| :| :# :# :. :. :. :. :. :.]
+                                 [ :| :# :# :. :. :. :. :. :# :#]
+                                 [ :| :# :# :. :. :. :. :. :# :#]
+                                 [ :| :# :# :. :. :. :. :# :# :|]
+                                 [ :| :| :# :# :. :# :# :# :# :|]
+                                 [ :| :| :# :# :# :# :# :| :| :|]
+                                 [ :| :| :| :| :# :| :| :| :| :|]
+                                 [ :| :| :| :| :| :| :| :| :| :|]])
+           1147))))
