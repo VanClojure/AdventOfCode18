@@ -75,13 +75,17 @@
   [game]
   (str/join \newline (mapv #(str/join (mapv name %)) game)))
 
+(defn make-game-states [input-game]
+  "Provides the lazy sequence of game states, starting with and including the given one."
+  (let [size (count (first input-game))
+        next-game-state (partial next-game-state how-many-neighbours size)]
+    (iterate next-game-state input-game)))
+
 (defn -main
   [& args]
   (let [input-game (-> args first slurp parse-lines)
-        size (count (first input-game))
-        next-game-state (partial next-game-state how-many-neighbours size)
-        games (iterate next-game-state input-game)
-        games-10 (take 10 games)
+        games (make-game-states input-game)
+        games-10 (drop 1 (take 11 games))
         final-game (nth games-10 9)]
     (println "Initial state:")
     (println (game->str input-game))

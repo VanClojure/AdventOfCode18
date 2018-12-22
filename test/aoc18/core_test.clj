@@ -2,6 +2,28 @@
   (:require [clojure.test :as test :refer [deftest is testing]]
             [aoc18.core :as core]))
 
+(def game-zero-example [[:. :# :. :# :. :. :. :| :# :.]
+                        [:. :. :. :. :. :# :| :# :# :|]
+                        [:. :| :. :. :| :. :. :. :# :.]
+                        [:. :. :| :# :. :. :. :. :. :#]
+                        [:# :. :# :| :| :| :# :| :# :|]
+                        [:. :. :. :# :. :| :| :. :. :.]
+                        [:. :| :. :. :. :. :| :. :. :.]
+                        [:| :| :. :. :. :# :| :. :# :|]
+                        [:| :. :| :| :| :| :. :. :| :.]
+                        [:. :. :. :# :. :| :. :. :| :.]])
+
+(def game-ten-example [[:. :| :| :# :# :. :. :. :. :.]
+                       [:| :| :# :# :# :. :. :. :. :.]
+                       [:| :| :# :# :. :. :. :. :. :.]
+                       [:| :# :# :. :. :. :. :. :# :#]
+                       [:| :# :# :. :. :. :. :. :# :#]
+                       [:| :# :# :. :. :. :. :# :# :|]
+                       [:| :| :# :# :. :# :# :# :# :|]
+                       [:| :| :# :# :# :# :# :| :| :|]
+                       [:| :| :| :| :# :| :| :| :| :|]
+                       [:| :| :| :| :| :| :| :| :| :|]])
+
 #_(deftest predicate-tests
   (is (= :open-ground (core/char->keyword ".")))
   (is (= :trees (core/char->keyword "|")))
@@ -34,31 +56,20 @@
     ))
 
 (deftest next-state-tests
-  (let [game [[:. :# :. :# :. :. :. :| :# :.]
-              [:. :. :. :. :. :# :| :# :# :|]
-              [:. :| :. :. :| :. :. :. :# :.]
-              [:. :. :| :# :. :. :. :. :. :#]
-              [:# :. :# :| :| :| :# :| :# :|]
-              [:. :. :. :# :. :| :| :. :. :.]
-              [:. :| :. :. :. :. :| :. :. :.]
-              [:| :| :. :. :. :# :| :. :# :|]
-              [:| :. :| :| :| :| :. :. :| :.]
-              [:. :. :. :# :. :| :. :. :| :.]]
-        my-neighbours-fn (constantly {:. 4
+  (let [my-neighbours-fn (constantly {:. 4
                                       :| 0
                                       :# 1})]
-    (core/next-game-state my-neighbours-fn game 10)))
+    (core/next-game-state my-neighbours-fn game-zero-example 10)))
 
 (deftest resource-value-tests
   (testing "the resource value of a board is the number of squares of lumberyards multiplied by the number of squares of forest."
-    (is (= (core/resource-value [[ :. :| :| :# :# :. :. :. :. :.]
-                                 [ :| :| :# :# :# :. :. :. :. :.]
-                                 [ :| :| :# :# :. :. :. :. :. :.]
-                                 [ :| :# :# :. :. :. :. :. :# :#]
-                                 [ :| :# :# :. :. :. :. :. :# :#]
-                                 [ :| :# :# :. :. :. :. :# :# :|]
-                                 [ :| :| :# :# :. :# :# :# :# :|]
-                                 [ :| :| :# :# :# :# :# :| :| :|]
-                                 [ :| :| :| :| :# :| :| :| :| :|]
-                                 [ :| :| :| :| :| :| :| :| :| :|]])
+    (is (= (core/resource-value game-ten-example)
            1147))))
+
+(deftest make-game-states-tests
+  (testing "Running the simulation for a certain number of iterations (whole minutes in this case) should produce the expected state for each iteration."
+    (let [game-states (core/make-game-states game-zero-example)]
+      (is (= (nth game-states 0)
+             game-zero-example))
+      (is (= (nth game-states 10)
+             game-ten-example)))))
