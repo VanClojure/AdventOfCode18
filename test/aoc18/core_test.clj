@@ -56,10 +56,18 @@
     ))
 
 (deftest next-state-tests
-  (let [my-neighbours-fn (constantly {:. 4
-                                      :| 0
-                                      :# 1})]
-    (core/next-game-state my-neighbours-fn game-zero-example 10)))
+  (is (= [[:. :. :. :. :. :. :. :| :. :.]
+          [:. :. :. :. :. :. :| :. :. :|]
+          [:. :| :. :. :| :. :. :. :. :.]
+          [:. :. :| :. :. :. :. :. :. :.]
+          [:. :. :. :| :| :| :. :| :. :|]
+          [:. :. :. :. :. :| :| :. :. :.]
+          [:. :| :. :. :. :. :| :. :. :.]
+          [:| :| :. :. :. :. :| :. :. :|]
+          [:| :. :| :| :| :| :. :. :| :.]
+          [:. :. :. :. :. :| :. :. :| :.]]
+         (let [my-neighbours-fn (constantly {:. 4 :| 0 :# 1})]
+           (core/next-game-state my-neighbours-fn 10 game-zero-example)))))
 
 (deftest resource-value-tests
   (testing "the resource value of a board is the number of squares of lumberyards multiplied by the number of squares of forest."
